@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+		/>
+		<title>🎣 Рыболовные рекорды</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family:
+					-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+					"Helvetica Neue", Arial, sans-serif;
+				background: linear-gradient(
+					135deg,
+					#1e5799 0%,
+					#2989d8 50%,
+					#207cca 100%
+				);
+				color: #333;
+				line-height: 1.6;
+				padding: 0;
+				margin: 0;
+				min-height: 100vh;
+			}
+
+			.container {
+				max-width: 800px;
+				margin: 0 auto;
+				padding: 15px;
+			}
+
+			header {
+				text-align: center;
+				padding: 25px 15px;
+				background: rgba(255, 255, 255, 0.95);
+				border-radius: 15px;
+				margin-bottom: 20px;
+				box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+			}
+
+			h1 {
+				font-size: 28px;
+				color: #1a5276;
+				margin-bottom: 10px;
+				font-weight: bold;
+			}
+
+			.subtitle {
+				color: #555;
+				font-size: 16px;
+			}
+
+			.card {
+				background: rgba(255, 255, 255, 0.98);
+				border-radius: 15px;
+				padding: 20px;
+				margin-bottom: 15px;
+				box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+			}
+
+			.btn {
+				display: block;
+				width: 100%;
+				padding: 15px;
+				margin: 10px 0;
+				border: none;
+				border-radius: 10px;
+				font-size: 18px;
+				font-weight: bold;
+				cursor: pointer;
+				transition: all 0.3s ease;
+			}
+
+			.btn-primary {
+				background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+				color: white;
+			}
+
+			.btn-primary:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+			}
+
+			.btn-secondary {
+				background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+				color: white;
+			}
+
+			.btn-secondary:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+			}
+
+			.btn-danger {
+				background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+				color: white;
+			}
+
+			.btn-danger:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+			}
+
+			.form-group {
+				margin-bottom: 15px;
+			}
+
+			label {
+				display: block;
+				margin-bottom: 8px;
+				font-weight: bold;
+				color: #2c3e50;
+				font-size: 16px;
+			}
+
+			select,
+			input {
+				width: 100%;
+				padding: 12px;
+				border: 2px solid #ddd;
+				border-radius: 8px;
+				font-size: 16px;
+				background: white;
+				transition: border-color 0.3s;
+			}
+
+			select:focus,
+			input:focus {
+				outline: none;
+				border-color: #3498db;
+				box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+			}
+
+			.table-container {
+				overflow-x: auto;
+				margin-top: 15px;
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				background: white;
+				border-radius: 10px;
+				overflow: hidden;
+			}
+
+			th {
+				background: linear-gradient(135deg, #2c3e50 0%, #1a5276 100%);
+				color: white;
+				padding: 12px 10px;
+				text-align: left;
+				font-weight: bold;
+				font-size: 14px;
+			}
+
+			td {
+				padding: 12px 10px;
+				border-bottom: 1px solid #eee;
+				font-size: 15px;
+			}
+
+			tr:last-child td {
+				border-bottom: none;
+			}
+
+			tr:hover {
+				background: #f8f9fa;
+			}
+
+			.record-row {
+				background: #e8f5e9 !important;
+				font-weight: bold;
+			}
+
+			.empty-row {
+				color: #999;
+				font-style: italic;
+			}
+
+			.modal {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.7);
+				z-index: 1000;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.modal-content {
+				background: white;
+				border-radius: 15px;
+				padding: 25px;
+				width: 90%;
+				max-width: 500px;
+				max-height: 85vh;
+				overflow-y: auto;
+				box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+			}
+
+			.modal-title {
+				font-size: 22px;
+				color: #2c3e50;
+				margin-bottom: 15px;
+				text-align: center;
+				font-weight: bold;
+			}
+
+			.modal-buttons {
+				display: flex;
+				gap: 10px;
+				margin-top: 20px;
+			}
+
+			.modal-buttons button {
+				flex: 1;
+				padding: 12px;
+				border: none;
+				border-radius: 8px;
+				font-size: 16px;
+				font-weight: bold;
+				cursor: pointer;
+			}
+
+			.toast {
+				position: fixed;
+				bottom: 20px;
+				left: 50%;
+				transform: translateX(-50%);
+				background: #27ae60;
+				color: white;
+				padding: 15px 25px;
+				border-radius: 8px;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+				z-index: 2000;
+				display: none;
+				font-size: 16px;
+				text-align: center;
+				animation: slideUp 3s forwards;
+			}
+
+			.toast.error {
+				background: #e74c3c;
+			}
+
+			@keyframes slideUp {
+				0%,
+				100% {
+					opacity: 0;
+					transform: translate(-50%, 20px);
+				}
+				10%,
+				90% {
+					opacity: 1;
+					transform: translate(-50%, 0);
+				}
+			}
+
+			.stats {
+				text-align: center;
+				padding: 15px;
+				background: rgba(255, 255, 255, 0.9);
+				border-radius: 10px;
+				margin-top: 15px;
+				font-size: 16px;
+			}
+
+			.stats-value {
+				font-size: 28px;
+				font-weight: bold;
+				color: #27ae60;
+			}
+
+			.footer {
+				text-align: center;
+				padding: 20px;
+				color: rgba(255, 255, 255, 0.8);
+				font-size: 14px;
+				margin-top: 10px;
+			}
+
+			@media (max-width: 480px) {
+				.container {
+					padding: 10px;
+				}
+
+				h1 {
+					font-size: 24px;
+				}
+
+				.btn {
+					padding: 12px;
+					font-size: 16px;
+				}
+
+				th,
+				td {
+					padding: 8px 5px;
+					font-size: 13px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<h1>🎣 Рыболовные рекорды</h1>
+				<div class="subtitle">Учёт максимальных уловов</div>
+			</header>
+
+			<div class="card">
+				<button class="btn btn-secondary" onclick="showRecords()">
+					📊 Посмотреть таблицу рекордов
+				</button>
+				<button class="btn btn-primary" onclick="showAddForm()">
+					➕ Добавить новый результат
+				</button>
+				<button class="btn btn-danger" onclick="confirmClear()">
+					🗑️ Сбросить все рекорды
+				</button>
+			</div>
+
+			<div class="stats" id="stats">
+				Рекордов: <span class="stats-value" id="count">0</span> / 6
+			</div>
+
+			<!-- Модальное окно для таблицы -->
+			<div class="modal" id="recordsModal">
+				<div class="modal-content">
+					<div class="modal-title">🏆 Таблица рекордов</div>
+					<div class="table-container">
+						<table>
+							<thead>
+								<tr>
+									<th>Рыба</th>
+									<th>Вес, г</th>
+									<th>Сезон</th>
+									<th>Приманка</th>
+									<th>Снасть</th>
+								</tr>
+							</thead>
+							<tbody id="recordsTableBody"></tbody>
+						</table>
+					</div>
+					<div class="modal-buttons">
+						<button
+							style="background: #95a5a6; color: white"
+							onclick="closeModal('recordsModal')"
+						>
+							Закрыть
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Модальное окно для формы -->
+			<div class="modal" id="addModal">
+				<div class="modal-content">
+					<div class="modal-title">➕ Новый результат улова</div>
+					<div class="form-group">
+						<label>Рыба *</label>
+						<select id="fishSelect">
+							<option value="">Выберите рыбу</option>
+							<option value="окунь">окунь</option>
+							<option value="плотва">плотва</option>
+							<option value="подлещик">подлещик</option>
+							<option value="густера">густера</option>
+							<option value="уклейка">уклейка</option>
+							<option value="ёрш">ёрш</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Вес (граммы) *</label>
+						<input
+							type="number"
+							id="weightInput"
+							placeholder="Введите вес"
+							min="1"
+						/>
+					</div>
+					<div class="form-group">
+						<label>Сезон</label>
+						<select id="seasonSelect">
+							<option value="">Не указан</option>
+							<option value="весна">весна</option>
+							<option value="лето">лето</option>
+							<option value="осень">осень</option>
+							<option value="зима">зима</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Приманка</label>
+						<select id="baitSelect">
+							<option value="">Не указана</option>
+							<option value="мотыль">мотыль</option>
+							<option value="червь">червь</option>
+							<option value="опарыш">опарыш</option>
+							<option value="блесна">блесна</option>
+							<option value="воблер">воблер</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Снасть *</label>
+						<select id="tackleSelect">
+							<option value="">Выберите снасть</option>
+							<option value="зимняя удочка">зимняя удочка</option>
+							<option value="удочка">удочка</option>
+							<option value="спиннинг">спиннинг</option>
+						</select>
+					</div>
+					<div class="modal-buttons">
+						<button
+							style="background: #95a5a6; color: white"
+							onclick="closeModal('addModal')"
+						>
+							Отмена
+						</button>
+						<button
+							style="background: #27ae60; color: white"
+							onclick="saveRecord()"
+						>
+							Сохранить
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Модальное окно подтверждения -->
+			<div class="modal" id="confirmModal">
+				<div class="modal-content">
+					<div class="modal-title" id="confirmTitle">Подтверждение</div>
+					<p
+						id="confirmMessage"
+						style="margin: 20px 0; text-align: center; font-size: 16px"
+					></p>
+					<div class="modal-buttons">
+						<button
+							style="background: #95a5a6; color: white"
+							onclick="closeModal('confirmModal')"
+						>
+							Нет
+						</button>
+						<button
+							style="background: #e74c3c; color: white"
+							id="confirmYesBtn"
+						>
+							Да
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Всплывающее уведомление -->
+			<div class="toast" id="toast"></div>
+		</div>
+
+		<div class="footer">Данные сохраняются в вашем браузере</div>
+
+		<script>
+			// Константы
+			const FISHES = [
+				"окунь",
+				"плотва",
+				"подлещик",
+				"густера",
+				"уклейка",
+				"ёрш",
+			];
+			const DEFAULT_RECORDS = {
+				окунь: null,
+				плотва: null,
+				подлещик: {
+					вес: 167,
+					сезон: "зима",
+					приманка: "мотыль",
+					снасть: "зимняя удочка",
+				},
+				густера: null,
+				уклейка: null,
+				ёрш: null,
+			};
+
+			// Загрузка данных из localStorage
+			function loadRecords() {
+				const saved = localStorage.getItem("fishRecords");
+				if (saved) {
+					return JSON.parse(saved);
+				}
+				// Первый запуск - инициализируем данными по умолчанию
+				saveRecords(DEFAULT_RECORDS);
+				return DEFAULT_RECORDS;
+			}
+
+			// Сохранение данных в localStorage
+			function saveRecords(records) {
+				localStorage.setItem("fishRecords", JSON.stringify(records));
+				updateStats();
+			}
+
+			// Обновление статистики
+			function updateStats() {
+				const records = loadRecords();
+				const count = Object.values(records).filter((r) => r !== null).length;
+				document.getElementById("count").textContent = count;
+			}
+
+			// Показать таблицу рекордов
+			function showRecords() {
+				const records = loadRecords();
+				const tbody = document.getElementById("recordsTableBody");
+				tbody.innerHTML = "";
+
+				// Сортируем по весу (рекордные первыми)
+				const sorted = Object.entries(records)
+					.filter(([_, data]) => data && data.вес)
+					.sort((a, b) => b[1].вес - a[1].вес);
+
+				// Добавляем рекорды
+				sorted.forEach(([fish, data]) => {
+					const row = document.createElement("tr");
+					row.className = "record-row";
+					row.innerHTML = `
+                    <td>${fish}</td>
+                    <td>${Math.round(data.вес)}</td>
+                    <td>${data.сезон || "-"}</td>
+                    <td>${data.приманка || "-"}</td>
+                    <td>${data.снасть || "-"}</td>
+                `;
+					tbody.appendChild(row);
+				});
+
+				// Добавляем рыбы без рекордов
+				const emptyFishes = FISHES.filter(
+					(fish) => !records[fish] || !records[fish].вес,
+				);
+				if (emptyFishes.length > 0) {
+					const emptyRow = document.createElement("tr");
+					emptyRow.innerHTML = `<td colspan="5" style="text-align: center; font-style: italic; color: #999; padding: 15px;">
+                    Рыбы без рекордов: ${emptyFishes.join(", ")}
+                </td>`;
+					tbody.appendChild(emptyRow);
+				}
+
+				document.getElementById("recordsModal").style.display = "flex";
+			}
+
+			// Закрыть модальное окно
+			function closeModal(id) {
+				document.getElementById(id).style.display = "none";
+			}
+
+			// Показать форму добавления
+			function showAddForm() {
+				// Очистить форму
+				document.getElementById("fishSelect").value = "";
+				document.getElementById("weightInput").value = "";
+				document.getElementById("seasonSelect").value = "";
+				document.getElementById("baitSelect").value = "";
+				document.getElementById("tackleSelect").value = "";
+				document.getElementById("addModal").style.display = "flex";
+			}
+
+			// Сохранить новый рекорд
+			function saveRecord() {
+				const fish = document.getElementById("fishSelect").value;
+				const weight = document.getElementById("weightInput").value;
+				const season = document.getElementById("seasonSelect").value;
+				const bait = document.getElementById("baitSelect").value;
+				const tackle = document.getElementById("tackleSelect").value;
+
+				// Валидация
+				if (!fish) {
+					showToast("Выберите рыбу!", "error");
+					return;
+				}
+
+				if (!weight || parseFloat(weight) <= 0) {
+					showToast("Введите корректный вес!", "error");
+					return;
+				}
+
+				if (!tackle) {
+					showToast("Выберите снасть!", "error");
+					return;
+				}
+
+				const weightNum = parseFloat(weight);
+				const records = loadRecords();
+				const current = records[fish];
+
+				// Проверка на рекорд
+				if (current && current.вес >= weightNum) {
+					showToast(
+						`Результат НЕ сохранён!\nТекущий рекорд ${fish}: ${current.вес} г\nВаш результат: ${weightNum} г`,
+						"error",
+					);
+					return;
+				}
+
+				// Сохраняем новый рекорд
+				records[fish] = {
+					вес: weightNum,
+					сезон: season || "",
+					приманка: bait || "",
+					снасть: tackle,
+				};
+
+				saveRecords(records);
+				closeModal("addModal");
+
+				// Сообщение об успехе
+				const oldWeight = current ? current.вес : null;
+				if (oldWeight) {
+					showToast(
+						`✓ Рекорд обновлён!\nБыло: ${oldWeight} г → Стало: ${weightNum} г`,
+						"success",
+					);
+				} else {
+					showToast(`✓ Новый рекорд!\n${fish}: ${weightNum} г`, "success");
+				}
+			}
+
+			// Подтвердить сброс
+			function confirmClear() {
+				document.getElementById("confirmTitle").textContent = "⚠️ Внимание";
+				document.getElementById("confirmMessage").textContent =
+					"Вы уверены, что хотите сбросить ВСЕ рекорды?";
+				document.getElementById("confirmYesBtn").onclick = function () {
+					clearRecords();
+					closeModal("confirmModal");
+				};
+				document.getElementById("confirmModal").style.display = "flex";
+			}
+
+			// Сбросить все рекорды
+			function clearRecords() {
+				saveRecords(DEFAULT_RECORDS);
+				showToast("✓ Все рекорды сброшены!", "success");
+			}
+
+			// Показать уведомление
+			function showToast(message, type = "success") {
+				const toast = document.getElementById("toast");
+				toast.textContent = message;
+				toast.className = "toast";
+				if (type === "error") {
+					toast.classList.add("error");
+				}
+				toast.style.display = "block";
+
+				setTimeout(() => {
+					toast.style.display = "none";
+				}, 3000);
+			}
+
+			// Закрытие модалок по клику вне контента
+			window.onclick = function (event) {
+				if (event.target.classList.contains("modal")) {
+					event.target.style.display = "none";
+				}
+			};
+
+			// Инициализация при загрузке
+			window.onload = function () {
+				updateStats();
+			};
+		</script>
+	</body>
+</html>
