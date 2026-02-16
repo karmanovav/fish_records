@@ -332,7 +332,7 @@
 			</div>
 
 			<div class="stats" id="stats">
-				Рекордов: <span class="stats-value" id="count">0</span> / 6
+				Рекордов: <span class="stats-value" id="count">0</span> / 12
 			</div>
 
 			<!-- Модальное окно для таблицы -->
@@ -372,12 +372,7 @@
 						<label>Рыба *</label>
 						<select id="fishSelect">
 							<option value="">Выберите рыбу</option>
-							<option value="окунь">окунь</option>
-							<option value="плотва">плотва</option>
-							<option value="подлещик">подлещик</option>
-							<option value="густера">густера</option>
-							<option value="уклейка">уклейка</option>
-							<option value="ёрш">ёрш</option>
+							<!-- Заполняется JS -->
 						</select>
 					</div>
 					<div class="form-group">
@@ -393,30 +388,21 @@
 						<label>Сезон</label>
 						<select id="seasonSelect">
 							<option value="">Не указан</option>
-							<option value="весна">весна</option>
-							<option value="лето">лето</option>
-							<option value="осень">осень</option>
-							<option value="зима">зима</option>
+							<!-- Заполняется JS -->
 						</select>
 					</div>
 					<div class="form-group">
 						<label>Приманка</label>
 						<select id="baitSelect">
 							<option value="">Не указана</option>
-							<option value="мотыль">мотыль</option>
-							<option value="червь">червь</option>
-							<option value="опарыш">опарыш</option>
-							<option value="блесна">блесна</option>
-							<option value="воблер">воблер</option>
+							<!-- Заполняется JS -->
 						</select>
 					</div>
 					<div class="form-group">
 						<label>Снасть *</label>
 						<select id="tackleSelect">
 							<option value="">Выберите снасть</option>
-							<option value="зимняя удочка">зимняя удочка</option>
-							<option value="удочка">удочка</option>
-							<option value="спиннинг">спиннинг</option>
+							<!-- Заполняется JS -->
 						</select>
 					</div>
 					<div class="modal-buttons">
@@ -468,7 +454,7 @@
 		<div class="footer">Данные сохраняются в вашем браузере</div>
 
 		<script>
-			// Константы
+			// === КОНСТАНТЫ (ВЫНЕСЕНО ИЗ HTML) ===
 			const FISHES = [
 				"окунь",
 				"плотва",
@@ -476,7 +462,34 @@
 				"густера",
 				"уклейка",
 				"ёрш",
+				"карась",
+				"голавль",
+				"линь",
+				"ротан",
+				"щука",
+				"судак",
 			];
+
+			const SEASONS = ["весна", "лето", "осень", "зима"];
+
+			const BAITS = [
+				"мотыль",
+				"червь",
+				"опарыш",
+				"блесна",
+				"воблер",
+				"мормышка безмотыльная",
+				"мормо",
+			];
+
+			const TACKLES = [
+				"зимняя удочка",
+				"поплавочная удочка",
+				"спиннинг",
+				"мормышинг",
+			];
+
+			// Данные по умолчанию для инициализации
 			const DEFAULT_RECORDS = {
 				окунь: null,
 				плотва: null,
@@ -490,6 +503,34 @@
 				уклейка: null,
 				ёрш: null,
 			};
+
+			// === ФУНКЦИИ ЗАПОЛНЕНИЯ СПИСКОВ ===
+
+			// Универсальная функция для заполнения select
+			function populateSelect(selectId, itemsArray) {
+				const select = document.getElementById(selectId);
+				// Сохраняем первый элемент (placeholder)
+				const firstOption = select.options[0];
+				select.innerHTML = "";
+				select.appendChild(firstOption);
+
+				itemsArray.forEach((item) => {
+					const option = document.createElement("option");
+					option.value = item;
+					option.textContent = item;
+					select.appendChild(option);
+				});
+			}
+
+			// Заполнение всех списков при старте
+			function initSelects() {
+				populateSelect("fishSelect", FISHES);
+				populateSelect("seasonSelect", SEASONS);
+				populateSelect("baitSelect", BAITS);
+				populateSelect("tackleSelect", TACKLES);
+			}
+
+			// === ОСНОВНАЯ ЛОГИКА ===
 
 			// Загрузка данных из localStorage
 			function loadRecords() {
@@ -512,6 +553,7 @@
 			function updateStats() {
 				const records = loadRecords();
 				const count = Object.values(records).filter((r) => r !== null).length;
+				// Обновляем не только цифру, но и максимум (всего видов рыб)
 				document.getElementById("count").textContent = count;
 			}
 
@@ -673,6 +715,7 @@
 
 			// Инициализация при загрузке
 			window.onload = function () {
+				initSelects(); // Заполняем списки
 				updateStats();
 			};
 		</script>
